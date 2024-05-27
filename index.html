@@ -2,9 +2,19 @@
 <html>
     <head>
         테스트용
+        <script src="https://code.jquery.com/jquery-3.7.1.slim.js" integrity="sha256-UgvvN8vBkgO0luPSUl2s8TIlOSYRoGFAX4jlCIm9Adc=" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/jquery.json-viewer@1.5.0/json-viewer/jquery.json-viewer.js"></script>
+        <link href="https://cdn.jsdelivr.net/npm/jquery.json-viewer@1.5.0/json-viewer/jquery.json-viewer.css" type="text/css" rel="stylesheet">
     </head>
     <body>
+        <pre id="json-renderer"></pre>
         <script>
+
+            /**
+             * @param {string} name
+             * @param {string} url
+             * @return {string}
+             * */
             function getParameterByName(name, url) {
                 if (!url) url = window.location.href;
                 name = name.replace(/[\[\]]/g, "\\$&");
@@ -15,16 +25,20 @@
                 return decodeURIComponent(results[2].replace(/\+/g, " "));
             }
 
-            window.onload = function() {
-                const value = getParameterByName('text', window.location.href)
-                console.log('value', value)
+            /**
+             * @param {string} text
+             * */
+            function clipboardCopy(text) {
                 var textField = document.createElement('textarea');
-                textField.innerText = value;
+                textField.innerText = text;
                 
                 window.navigator.clipboard.writeText(textField.value);
+            }
 
-                alert('저장')
-                window.close()
+            window.onload = function() {
+                const value = getParameterByName('text', window.location.href)
+                
+                $('#json-renderer').jsonViewer(JSON.parse(atob(value)));
             }
         </script>
     </body>
