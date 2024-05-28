@@ -8,6 +8,7 @@
     </head>
     <body>
         <pre id="json-renderer"></pre>
+        <ul id="list"></ul>
         <script>
 
             /**
@@ -35,10 +36,34 @@
                 window.navigator.clipboard.writeText(textField.value);
             }
 
+            function flattenJson(obj, prefix = '') {
+                let result = {};
+
+                for (let key in obj) {
+                    if (typeof obj[key] === 'object' && obj[key] !== null) {
+                    const nestedPrefix = prefix ? `${prefix}.${key}` : key;
+                    result = { ...result, ...flattenJson(obj[key], nestedPrefix) };
+                    } else {
+                    const finalKey = prefix ? `${prefix}.${key}` : key;
+                    result[finalKey] = obj[key];
+                    }
+                }
+
+                return result;
+            }
+
             window.onload = function() {
                 const value = getParameterByName('text', window.location.href)
+                const obj = JSON.parse(atob(value))
                 
-                $('#json-renderer').jsonViewer(JSON.parse(atob(value)));
+                $('#json-renderer').jsonViewer(obj);
+
+                const list = flattenJson(obj)
+                console.log(list)
+                
+                document.getElementById('list').innerHTML = Object.keys(list).map(key => {
+                    return `<li><button onclick="clipboardCopy('${(list[key])}')">${key} copy</button></li>`
+                }).join('')
             }
         </script>
     </body>
