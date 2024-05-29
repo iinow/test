@@ -3,22 +3,37 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+        <link
+            rel="stylesheet"
+            href="//cdn.jsdelivr.net/npm/element-plus/dist/index.css"
+        />
+        <script src="//cdn.jsdelivr.net/npm/element-plus"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/element-plus/2.7.3/index.full.min.js" integrity="sha512-3Pkbh0kSaStoa7Fj4vCEk+rz/wOB4FvL+SKwUCpBaTBf8UXsoM4Scb/akBqMnO4KMUjnsZPSQdjoi5ocs8vRsg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/element-plus/2.7.3/index.min.css" integrity="sha512-hHgBtp/YzcMMk0TJDuYnGlUwccUyH+AxVCLP/XIcb5i1hWK7OM4n8c7vOxjc9NS3HiRgPVHkiwm2OUuXdLE+Xw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+        <!-- <script src="https://cdn.jsdelivr.net/npm/element-ui@2.15.14/lib/index.min.js"></script>
+        <link href="https://cdn.jsdelivr.net/npm/element-ui@2.15.14/lib/theme-chalk/index.min.css" rel="stylesheet"> -->
         <script src="https://code.jquery.com/jquery-3.7.1.slim.js" integrity="sha256-UgvvN8vBkgO0luPSUl2s8TIlOSYRoGFAX4jlCIm9Adc=" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/jquery.json-viewer@1.5.0/json-viewer/jquery.json-viewer.js"></script>
         <link href="https://cdn.jsdelivr.net/npm/jquery.json-viewer@1.5.0/json-viewer/jquery.json-viewer.css" type="text/css" rel="stylesheet">
     </head>
     <body>
-        <h1 id="title"></h1>
+        <div id="app">
+            <h1>{{ title }}</h1>
+            <div v-for="btn in btnCopyList" style="margin: 4px;">
+                <el-button @click="this.clipboardCopy(btn.label, btn.value)">{{ btn.label }} 복사하기</el-button>
+            </div>
+        </div>
         <pre id="json-renderer"></pre>
-        <ul id="list"></ul>
-        <script>
+        <script setup>
+            const { createApp, ref } = Vue
 
             /**
              * @param {string} name
              * @param {string} url
              * @return {string}
              * */
-            function getParameterByName(name, url) {
+             function getParameterByName(name, url) {
                 if (!url) url = window.location.href;
                 name = name.replace(/[\[\]]/g, "\\$&");
                 var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
@@ -28,15 +43,21 @@
                 return decodeURIComponent(results[2].replace(/\+/g, " "));
             }
 
-            /**
-             * @param {string} text
-             * */
-            function clipboardCopy(text) {
-                var textField = document.createElement('textarea');
-                textField.innerText = text;
+            // /**
+            //  * @param {string} text
+            //  * */
+            // function clipboardCopy(text) {
+            //     var textField = document.createElement('textarea');
+            //     textField.innerText = text;
                 
-                window.navigator.clipboard.writeText(textField.value);
-            }
+            //     window.navigator.clipboard.writeText(textField.value);
+
+            //     ElementPlus.ElNotification({
+            //         title: '복사 완료',
+            //         message: '클립보드에 복사되었습니다.',
+            //         duration: 2000
+            //     });
+            // }
 
             function flattenJson(obj, prefix = '') {
                 let result = {};
@@ -54,20 +75,60 @@
                 return result;
             }
 
-            window.onload = function() {
+            function getText() {
                 const value = getParameterByName('text', window.location.href)
-                const obj = JSON.parse(atob(value))
-                
-                $('#json-renderer').jsonViewer(obj);
+                if (!value) {
+                    return
+                }
 
-                const list = flattenJson(obj)
-                
-                document.getElementById('list').innerHTML = Object.keys(list).map(key => {
-                    return `<li><button onclick="clipboardCopy('${(list[key])}')">${key} copy</button></li>`
-                }).join('')
-
-                document.getElementById('title').innerText = getParameterByName('title', window.location.href)
+                try {
+                    return JSON.parse(atob(value))
+                } catch (e) {
+                    return
+                }
             }
+
+            const app = createApp({
+                setup() {
+                    const message = ref('Hello vue!')
+                    const obj = getText()
+                    const list = flattenJson(obj)
+
+                    $('#json-renderer').jsonViewer(obj);
+
+                    // document.getElementById('list').innerHTML = Object.keys(list).map(key => {
+                    //     return `<li><button onclick="clipboardCopy('${(list[key])}')">${key} copy</button></li>`
+                    // }).join('')
+
+                    // document.getElementById('title').innerText = getParameterByName('title', window.location.href)
+
+                    return {
+                        message,
+                        btnCopyList: Object.keys(list).map(key => ({ label: key, value: list[key] })),
+                        title: getParameterByName('title', window.location.href)
+                    }
+                },
+                methods: {
+                    /**
+                     * @param {string} text
+                     * */
+                    clipboardCopy: function(label, value) {
+                        var textField = document.createElement('textarea');
+                        textField.innerText = value;
+                        
+                        window.navigator.clipboard.writeText(textField.value);
+
+                        ElementPlus.ElNotification({
+                            title: `복사 완료`,
+                            message: `클립보드에 ${label} 복사되었습니다.`,
+                            duration: 2000
+                        });
+                    }
+                }
+            });
+
+            app.use(ElementPlus)
+            app.mount('#app')
         </script>
     </body>
 </html>
