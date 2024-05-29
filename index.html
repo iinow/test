@@ -94,7 +94,7 @@
                     const obj = getText()
                     const list = flattenJson(obj)
 
-                    $('#json-renderer').jsonViewer(obj);
+                    $('#json-renderer').jsonViewer(obj, { collapsed: true });
 
                     // document.getElementById('list').innerHTML = Object.keys(list).map(key => {
                     //     return `<li><button onclick="clipboardCopy('${(list[key])}')">${key} copy</button></li>`
