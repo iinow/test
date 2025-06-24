@@ -1,5 +1,5 @@
 ---
-title: 모모API v0.1
+title: 공통 공지 v0.1
 language_tabs:
   - http: HTTP
 language_clients:
@@ -161,8 +161,8 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|success|boolean|false|none|none|
-|data|[RPerson](#schemarperson)|false|none|none|
+|success|boolean|true|none|요청이 성공적으로 처리되었는지 여부|
+|data|[RPerson](#schemarperson)|true|none|요청에 대한 응답 데이터|
 
 <h2 id="tocS_RPerson">RPerson</h2>
 <!-- backwards compatibility -->
