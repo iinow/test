@@ -1,5 +1,5 @@
 ---
-title: 공통 공지 v0.1
+title: 모모API v0.1
 language_tabs:
   - http: HTTP
 language_clients:
@@ -90,59 +90,53 @@ Accept: */*
 
 > Example responses
 
-> default Response
+> 200 Response
+
+> 400 Response
+
+```json
+{
+  "code": "400",
+  "message": "잘못된 요청입니다."
+}
+```
 
 <h3 id="foo_1-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|default|Default|default response|[ApiResponseRPerson](#schemaapiresponserperson)|
-
-<aside class="success">
-This operation does not require authentication
-</aside>
-
-<h1 id="--bar-controller">bar-controller</h1>
-
-## bar
-
-<a id="opIdbar"></a>
-
-> Code samples
-
-```http
-GET http://localhost:8080/bar?size=10&page=0 HTTP/1.1
-Host: localhost:8080
-Accept: */*
-
-```
-
-`GET /bar`
-
-<h3 id="bar-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|size|query|integer(int32)|true|사이즈|
-|page|query|integer(int32)|true|페이지 번호|
-
-> Example responses
-
-> 200 Response
-
-<h3 id="bar-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|OK|Inline|
-
-<h3 id="bar-responseschema">Response Schema</h3>
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|성공|[ApiResponseRPerson](#schemaapiresponserperson)|
+|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|잘못된 요청입니다.|[ApiErrorResponse](#schemaapierrorresponse)|
 
 <aside class="success">
 This operation does not require authentication
 </aside>
 
 # Schemas
+
+<h2 id="tocS_ApiErrorResponse">ApiErrorResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemaapierrorresponse"></a>
+<a id="schema_ApiErrorResponse"></a>
+<a id="tocSapierrorresponse"></a>
+<a id="tocsapierrorresponse"></a>
+
+```json
+{
+  "code": "400",
+  "message": "잘못된 요청입니다."
+}
+
+```
+
+공통 에러 응답
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|code|string|false|none|none|
+|message|string|false|none|none|
 
 <h2 id="tocS_ApiResponseRPerson">ApiResponseRPerson</h2>
 <!-- backwards compatibility -->
